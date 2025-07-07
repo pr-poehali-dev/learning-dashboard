@@ -55,6 +55,22 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
 
   const currentWord = word || defaultWord;
 
+  // Проверяем, что все необходимые поля существуют
+  const safeWord = {
+    ...currentWord,
+    examples: currentWord.examples || [],
+    synonyms: currentWord.synonyms || [],
+    antonyms: currentWord.antonyms || [],
+    etymology: currentWord.etymology || "Информация недоступна",
+    phonetic: currentWord.phonetic || "/ˈwɜːrd/",
+    partOfSpeech: currentWord.partOfSpeech || "word",
+    frequency: currentWord.frequency || 50,
+    lastReviewed: currentWord.lastReviewed || "Не изучалось",
+    nextReview: currentWord.nextReview || "Скоро",
+    correctAnswers: currentWord.correctAnswers || 0,
+    totalAttempts: currentWord.totalAttempts || 1,
+  };
+
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case "easy":
@@ -75,7 +91,7 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
   };
 
   const accuracyPercentage = Math.round(
-    (currentWord.correctAnswers / currentWord.totalAttempts) * 100,
+    (safeWord.correctAnswers / safeWord.totalAttempts) * 100,
   );
 
   return (
@@ -109,23 +125,23 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <h2 className="text-4xl font-bold text-gray-800">
-                    {currentWord.word}
+                    {safeWord.word}
                   </h2>
-                  <Badge className={getDifficultyColor(currentWord.difficulty)}>
-                    {currentWord.difficulty}
+                  <Badge className={getDifficultyColor(safeWord.difficulty)}>
+                    {safeWord.difficulty}
                   </Badge>
                 </div>
                 <p className="text-xl text-gray-600 mb-2">
-                  {currentWord.translation}
+                  {safeWord.translation}
                 </p>
                 <div className="flex items-center gap-4 text-sm text-gray-500">
                   <span className="flex items-center gap-1">
                     <Icon name="Volume2" size={16} />
-                    {currentWord.phonetic}
+                    {safeWord.phonetic}
                   </span>
                   <span className="flex items-center gap-1">
                     <Icon name="Tag" size={16} />
-                    {currentWord.partOfSpeech}
+                    {safeWord.partOfSpeech}
                   </span>
                 </div>
               </div>
@@ -145,7 +161,7 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
           </CardHeader>
           <CardContent>
             <p className="text-gray-700 text-lg leading-relaxed">
-              {currentWord.definition}
+              {safeWord.definition}
             </p>
           </CardContent>
         </Card>
@@ -173,12 +189,12 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
                 <Icon name="BarChart" size={24} className="text-pink-500" />
                 <div>
                   <div className="text-2xl font-bold text-gray-800">
-                    {currentWord.frequency}
+                    {safeWord.frequency}
                   </div>
                   <div className="text-sm text-gray-600">Частота</div>
                 </div>
               </div>
-              <Progress value={currentWord.frequency} className="mt-2 h-2" />
+              <Progress value={safeWord.frequency} className="mt-2 h-2" />
             </CardContent>
           </Card>
 
@@ -188,7 +204,7 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
                 <Icon name="Clock" size={24} className="text-orange-500" />
                 <div>
                   <div className="text-lg font-bold text-gray-800">
-                    {currentWord.nextReview}
+                    {safeWord.nextReview}
                   </div>
                   <div className="text-sm text-gray-600">Следующий повтор</div>
                 </div>
@@ -240,7 +256,7 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {currentWord.examples.map((example, index) => (
+                  {safeWord.examples.map((example, index) => (
                     <div
                       key={index}
                       className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100"
@@ -269,7 +285,7 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
                       Синонимы
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {currentWord.synonyms.map((synonym, index) => (
+                      {safeWord.synonyms.map((synonym, index) => (
                         <Badge
                           key={index}
                           variant="outline"
@@ -286,7 +302,7 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
                       Антонимы
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {currentWord.antonyms.map((antonym, index) => (
+                      {safeWord.antonyms.map((antonym, index) => (
                         <Badge
                           key={index}
                           variant="outline"
@@ -312,7 +328,7 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
               </CardHeader>
               <CardContent>
                 <div className="p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg border border-orange-100">
-                  <p className="text-gray-700">{currentWord.etymology}</p>
+                  <p className="text-gray-700">{safeWord.etymology}</p>
                 </div>
               </CardContent>
             </Card>
@@ -336,19 +352,19 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Правильных ответов</span>
                       <span className="font-bold text-emerald-600">
-                        {currentWord.correctAnswers}/{currentWord.totalAttempts}
+                        {safeWord.correctAnswers}/{safeWord.totalAttempts}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Последний повтор</span>
                       <span className="font-bold text-gray-800">
-                        {currentWord.lastReviewed}
+                        {safeWord.lastReviewed}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Следующий повтор</span>
                       <span className="font-bold text-orange-600">
-                        {currentWord.nextReview}
+                        {safeWord.nextReview}
                       </span>
                     </div>
                   </div>
@@ -366,10 +382,10 @@ const WordDetail = ({ word, onBack }: WordDetailProps) => {
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-gray-600">Частота в языке</span>
                         <span className="font-bold text-pink-600">
-                          {currentWord.frequency}%
+                          {safeWord.frequency}%
                         </span>
                       </div>
-                      <Progress value={currentWord.frequency} className="h-3" />
+                      <Progress value={safeWord.frequency} className="h-3" />
                     </div>
                   </div>
                 </div>
