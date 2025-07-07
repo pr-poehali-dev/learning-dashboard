@@ -5,10 +5,27 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Icon from "@/components/ui/icon";
+import WordDetail from "./WordDetail";
 
 const Index = () => {
   const [currentCard, setCurrentCard] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedWord, setSelectedWord] = useState<any>(null);
+  const [showWordDetail, setShowWordDetail] = useState(false);
+
+  const openWordDetail = (word: any) => {
+    setSelectedWord(word);
+    setShowWordDetail(true);
+  };
+
+  const closeWordDetail = () => {
+    setShowWordDetail(false);
+    setSelectedWord(null);
+  };
+
+  if (showWordDetail) {
+    return <WordDetail word={selectedWord} onBack={closeWordDetail} />;
+  }
 
   const vocabularyWords = [
     {
@@ -179,7 +196,10 @@ const Index = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="text-center">
-                <h3 className="text-3xl font-bold text-gray-800 mb-2">
+                <h3
+                  className="text-3xl font-bold text-gray-800 mb-2 cursor-pointer hover:text-purple-600 transition-colors"
+                  onClick={() => openWordDetail(vocabularyWords[currentCard])}
+                >
                   {vocabularyWords[currentCard].word}
                 </h3>
                 <p className="text-lg text-gray-600 mb-4">
@@ -241,9 +261,7 @@ const Index = () => {
                     <div
                       key={index}
                       className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg hover:from-purple-100 hover:to-pink-100 transition-colors cursor-pointer"
-                      onClick={() =>
-                        setCurrentCard(vocabularyWords.indexOf(word))
-                      }
+                      onClick={() => openWordDetail(word)}
                     >
                       <div>
                         <p className="font-medium text-gray-800">{word.word}</p>
