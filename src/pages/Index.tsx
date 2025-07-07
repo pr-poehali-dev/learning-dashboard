@@ -3,10 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import Icon from "@/components/ui/icon";
 
 const Index = () => {
   const [currentCard, setCurrentCard] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const vocabularyWords = [
     {
@@ -45,23 +47,29 @@ const Index = () => {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case "easy":
-        return "bg-green-100 text-green-800";
+        return "bg-emerald-100 text-emerald-800";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-orange-100 text-orange-800";
       case "hard":
-        return "bg-red-100 text-red-800";
+        return "bg-rose-100 text-rose-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
 
+  const filteredWords = vocabularyWords.filter(
+    (word) =>
+      word.word.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      word.translation.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <header className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
               <Icon name="Book" className="text-white" size={24} />
             </div>
             <h1 className="text-2xl font-bold text-gray-800">Lexicon</h1>
@@ -71,81 +79,82 @@ const Index = () => {
               <Icon name="Settings" size={16} className="mr-2" />
               Настройки
             </Button>
-            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
+            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-medium">
               ЮР
             </div>
           </div>
         </header>
 
-        {/* Navigation */}
-        <nav className="flex gap-2 mb-8">
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-            Домашняя
-          </Button>
-          <Button variant="outline">Изучение</Button>
-          <Button variant="outline">Повторение</Button>
-          <Button variant="outline">Статистика</Button>
-        </nav>
+        {/* Search Bar */}
+        <div className="relative mb-8">
+          <Icon
+            name="Search"
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+          <Input
+            placeholder="Поиск слов..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 py-3 text-lg bg-white/80 backdrop-blur-sm border-purple-200 focus:border-purple-500 focus:ring-purple-500"
+          />
+        </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-white shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in hover:scale-105">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
-                <Icon name="Brain" size={16} className="text-blue-500" />
-                Изучено слов
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gray-800 mb-2">
-                {stats.wordsKnown.toLocaleString()}
+          <Card className="bg-white/80 backdrop-blur-sm border-purple-200 shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in hover:scale-105">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Icon name="Brain" size={24} className="text-purple-500" />
+                <div>
+                  <div className="text-2xl font-bold text-gray-800">
+                    {stats.wordsKnown.toLocaleString()}
+                  </div>
+                  <div className="text-sm text-gray-600">Изучено слов</div>
+                </div>
               </div>
-              <Progress value={75} className="h-2" />
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in hover:scale-105">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
-                <Icon name="Clock" size={16} className="text-green-500" />К
-                повторению
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gray-800 mb-2">
-                {stats.dueToday}
+          <Card className="bg-white/80 backdrop-blur-sm border-pink-200 shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in hover:scale-105">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Icon name="Clock" size={24} className="text-pink-500" />
+                <div>
+                  <div className="text-2xl font-bold text-gray-800">
+                    {stats.dueToday}
+                  </div>
+                  <div className="text-sm text-gray-600">К повторению</div>
+                </div>
               </div>
-              <Progress value={30} className="h-2" />
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in hover:scale-105">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
-                <Icon name="Flame" size={16} className="text-orange-500" />
-                Серия дней
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gray-800 mb-2">
-                {stats.streak} дней
+          <Card className="bg-white/80 backdrop-blur-sm border-orange-200 shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in hover:scale-105">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Icon name="Flame" size={24} className="text-orange-500" />
+                <div>
+                  <div className="text-2xl font-bold text-gray-800">
+                    {stats.streak} дней
+                  </div>
+                  <div className="text-sm text-gray-600">Серия дней</div>
+                </div>
               </div>
-              <Progress value={60} className="h-2" />
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in hover:scale-105">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
-                <Icon name="Target" size={16} className="text-purple-500" />
-                Прогресс
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gray-800 mb-2">
-                {Math.round((stats.wordsKnown / stats.totalWords) * 100)}%
+          <Card className="bg-white/80 backdrop-blur-sm border-emerald-200 shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in hover:scale-105">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Icon name="Target" size={24} className="text-emerald-500" />
+                <div>
+                  <div className="text-2xl font-bold text-gray-800">
+                    {Math.round((stats.wordsKnown / stats.totalWords) * 100)}%
+                  </div>
+                  <div className="text-sm text-gray-600">Прогресс</div>
+                </div>
               </div>
-              <Progress value={75} className="h-2" />
             </CardContent>
           </Card>
         </div>
@@ -183,7 +192,7 @@ const Index = () => {
 
               <div className="flex gap-3">
                 <Button
-                  className="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
+                  className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                   onClick={() =>
                     setCurrentCard(
                       (prev) => (prev + 1) % vocabularyWords.length,
@@ -227,22 +236,27 @@ const Index = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {vocabularyWords.map((word, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    <div>
-                      <p className="font-medium text-gray-800">{word.word}</p>
-                      <p className="text-sm text-gray-600">
-                        {word.translation}
-                      </p>
+                {(searchTerm ? filteredWords : vocabularyWords).map(
+                  (word, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg hover:from-purple-100 hover:to-pink-100 transition-colors cursor-pointer"
+                      onClick={() =>
+                        setCurrentCard(vocabularyWords.indexOf(word))
+                      }
+                    >
+                      <div>
+                        <p className="font-medium text-gray-800">{word.word}</p>
+                        <p className="text-sm text-gray-600">
+                          {word.translation}
+                        </p>
+                      </div>
+                      <Badge className={getDifficultyColor(word.difficulty)}>
+                        {word.difficulty}
+                      </Badge>
                     </div>
-                    <Badge className={getDifficultyColor(word.difficulty)}>
-                      {word.difficulty}
-                    </Badge>
-                  </div>
-                ))}
+                  ),
+                )}
               </div>
             </CardContent>
           </Card>
@@ -250,11 +264,11 @@ const Index = () => {
 
         {/* Action Buttons */}
         <div className="flex gap-4 mt-8">
-          <Button className="flex-1 bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white py-6 text-lg hover:scale-105 transition-transform duration-200">
+          <Button className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-6 text-lg hover:scale-105 transition-transform duration-200">
             <Icon name="Plus" size={20} className="mr-2" />
             Добавить слово
           </Button>
-          <Button className="flex-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white py-6 text-lg hover:scale-105 transition-transform duration-200">
+          <Button className="flex-1 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white py-6 text-lg hover:scale-105 transition-transform duration-200">
             <Icon name="RotateCcw" size={20} className="mr-2" />
             Начать повторение
           </Button>
